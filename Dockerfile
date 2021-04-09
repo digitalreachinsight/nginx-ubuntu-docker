@@ -8,7 +8,8 @@ ENV SECRET_KEY="ThisisNotRealKey"
 RUN apt-get clean
 RUN apt-get update
 RUN apt-get upgrade -y
-RUN apt-get install --no-install-recommends -y  wget git nginx 
+RUN apt-get install --no-install-recommends -y  wget git nginx certbot python3-certbot-nginx 
+RUN apt-get install --no-install-recommends -y  vim nano apache2-utils htop net-tools ssh
 
 # Install Python libs from requirements.txt.
 FROM builder_base_docker as python_libs_docker
@@ -17,6 +18,7 @@ WORKDIR /app
 FROM python_libs_docker
 #COPY gunicorn.ini manage.py ./
 COPY boot.sh /
+COPY sites.conf /etc/nginx/sites-enabled/
 RUN chmod 755 /boot.sh
 EXPOSE 80
 #HEALTHCHECK --interval=1m --timeout=5s --start-period=10s --retries=3 CMD ["wget", "-q", "-O", "-", "http://localhost:80/"]
